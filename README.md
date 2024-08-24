@@ -6,3 +6,6 @@ Welcome to the **MacOS UI Clone** repository! This project is a recreation of th
 
 ## 🚀 Live Demo
 Explore the [live demo](https://l1avzh.github.io/MacOS-UI-Clone/) to see the MacOS UI in action right in your browser.
+
+## 🤝 Contributions
+Contributions, issues, and feature requests are welcome!
