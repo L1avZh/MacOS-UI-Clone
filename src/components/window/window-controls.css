@@ -1,0 +1,56 @@
+.window-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding-left: 12px;
+}
+
+.window-control {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+}
+.window-control svg {
+  width: 7px;
+  height: 7px;
+}
+.window-control.close {
+  background: #ff5f57;
+}
+.window-control.minimize {
+  background: #febc2e;
+}
+.window-control.maximize {
+  background: #28c840;
+}
+
+.window-controls:hover .window-control {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.window-controls.unfocused .window-control {
+  background: var(--hairline);
+}
+.window-controls.unfocused:hover .window-control.close {
+  background: #ff5f57;
+  color: rgba(0, 0, 0, 0.55);
+}
+.window-controls.unfocused:hover .window-control.minimize {
+  background: #febc2e;
+  color: rgba(0, 0, 0, 0.55);
+}
+.window-controls.unfocused:hover .window-control.maximize {
+  background: #28c840;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.window-control:focus-visible {
+  box-shadow: var(--focus-ring);
+}

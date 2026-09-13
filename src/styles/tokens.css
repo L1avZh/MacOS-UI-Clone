@@ -1,0 +1,120 @@
+:root {
+  color-scheme: light;
+
+  --text-primary: #1d1d1f;
+  --text-secondary: rgba(29, 29, 31, 0.72);
+  --text-tertiary: rgba(29, 29, 31, 0.5);
+  --text-on-accent: #ffffff;
+
+  --surface: #ffffff;
+  --surface-toolbar: rgba(246, 246, 248, 0.9);
+  --surface-sidebar: rgba(240, 240, 242, 0.7);
+  --surface-inset: rgba(0, 0, 0, 0.035);
+  --surface-elevated: rgba(255, 255, 255, 0.78);
+  --surface-window: rgba(255, 255, 255, 0.86);
+
+  --hairline: rgba(0, 0, 0, 0.1);
+  --hover-fill: rgba(0, 0, 0, 0.06);
+  --selection-fill: rgba(10, 132, 255, 0.16);
+
+  --accent: #0a84ff;
+  --accent-strong: #0060df;
+
+  --menubar-bg: rgba(255, 255, 255, 0.55);
+  --menubar-text: #1d1d1f;
+
+  --dock-bg: rgba(255, 255, 255, 0.35);
+  --dock-border: rgba(255, 255, 255, 0.4);
+
+  --shadow-window: 0 20px 60px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.28);
+
+  --radius-window: 10px;
+  --radius-control: 8px;
+
+  --focus-ring: 0 0 0 3px rgba(10, 132, 255, 0.5);
+
+  --motion-fast: 120ms;
+  --motion-base: 220ms;
+  --motion-slow: 360ms;
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:root[data-theme="dark"],
+:root:not([data-theme="light"]):not([data-theme="dark"]) {
+  /* placeholder — real dark values applied via the media query + explicit class below */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --text-primary: rgba(255, 255, 255, 0.92);
+    --text-secondary: rgba(255, 255, 255, 0.65);
+    --text-tertiary: rgba(255, 255, 255, 0.45);
+
+    --surface: #1e1e22;
+    --surface-toolbar: rgba(40, 40, 44, 0.85);
+    --surface-sidebar: rgba(30, 30, 34, 0.65);
+    --surface-inset: rgba(255, 255, 255, 0.06);
+    --surface-elevated: rgba(38, 38, 42, 0.8);
+    --surface-window: rgba(32, 32, 36, 0.82);
+
+    --hairline: rgba(255, 255, 255, 0.12);
+    --hover-fill: rgba(255, 255, 255, 0.08);
+    --selection-fill: rgba(10, 132, 255, 0.35);
+
+    --menubar-bg: rgba(28, 28, 30, 0.55);
+    --menubar-text: rgba(255, 255, 255, 0.92);
+
+    --dock-bg: rgba(30, 30, 34, 0.4);
+    --dock-border: rgba(255, 255, 255, 0.14);
+
+    --shadow-window: 0 20px 60px rgba(0, 0, 0, 0.6), 0 2px 10px rgba(0, 0, 0, 0.4);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --text-primary: rgba(255, 255, 255, 0.92);
+  --text-secondary: rgba(255, 255, 255, 0.65);
+  --text-tertiary: rgba(255, 255, 255, 0.45);
+
+  --surface: #1e1e22;
+  --surface-toolbar: rgba(40, 40, 44, 0.85);
+  --surface-sidebar: rgba(30, 30, 34, 0.65);
+  --surface-inset: rgba(255, 255, 255, 0.06);
+  --surface-elevated: rgba(38, 38, 42, 0.8);
+  --surface-window: rgba(32, 32, 36, 0.82);
+
+  --hairline: rgba(255, 255, 255, 0.12);
+  --hover-fill: rgba(255, 255, 255, 0.08);
+  --selection-fill: rgba(10, 132, 255, 0.35);
+
+  --menubar-bg: rgba(28, 28, 30, 0.55);
+  --menubar-text: rgba(255, 255, 255, 0.92);
+
+  --dock-bg: rgba(30, 30, 34, 0.4);
+  --dock-border: rgba(255, 255, 255, 0.14);
+
+  --shadow-window: 0 20px 60px rgba(0, 0, 0, 0.6), 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-high-contrast="true"] {
+  --hairline: currentColor;
+  --hover-fill: rgba(127, 127, 127, 0.35);
+  --selection-fill: rgba(10, 132, 255, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion-base: 0ms;
+    --motion-slow: 0ms;
+  }
+}
+
+:root[data-reduce-motion="true"] {
+  --motion-fast: 0ms;
+  --motion-base: 0ms;
+  --motion-slow: 0ms;
+}

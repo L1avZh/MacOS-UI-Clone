@@ -1,0 +1,185 @@
+.window {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-window);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border-radius: var(--radius-window);
+  overflow: hidden;
+  box-shadow: var(--shadow-float);
+  border: 1px solid var(--hairline);
+  animation: window-open var(--motion-base) var(--ease-standard);
+  will-change: transform;
+}
+
+.window.maximized {
+  border-radius: 0;
+}
+
+.window.focused {
+  box-shadow: var(--shadow-window);
+}
+
+.window.closing {
+  animation: window-close var(--motion-fast) var(--ease-standard) forwards;
+  pointer-events: none;
+}
+
+@keyframes window-open {
+  from {
+    opacity: 0;
+    transform: translate(var(--tx, 0), var(--ty, 0)) scale(0.96);
+  }
+}
+
+@keyframes window-close {
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+.window-titlebar {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  flex-shrink: 0;
+  background: var(--surface-toolbar);
+  border-bottom: 1px solid var(--hairline);
+  cursor: default;
+  user-select: none;
+  touch-action: none;
+}
+
+.window-title {
+  flex: 1;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-right: 68px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+  unicode-bidi: plaintext;
+}
+
+[dir="rtl"] .window-title {
+  margin-right: 0;
+  margin-left: 68px;
+}
+
+.window:not(.focused) .window-title {
+  color: var(--text-tertiary);
+}
+
+.window-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+  background: var(--surface);
+}
+
+.window-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-tertiary);
+}
+
+.window-resize-handles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.resize-handle {
+  position: absolute;
+  pointer-events: auto;
+  touch-action: none;
+}
+.resize-n,
+.resize-s {
+  left: 8px;
+  right: 8px;
+  height: 6px;
+  cursor: ns-resize;
+}
+.resize-n {
+  top: -3px;
+}
+.resize-s {
+  bottom: -3px;
+}
+.resize-e,
+.resize-w {
+  top: 8px;
+  bottom: 8px;
+  width: 6px;
+  cursor: ew-resize;
+}
+.resize-e {
+  right: -3px;
+}
+.resize-w {
+  left: -3px;
+}
+.resize-ne,
+.resize-nw,
+.resize-se,
+.resize-sw {
+  width: 14px;
+  height: 14px;
+}
+.resize-ne {
+  top: -4px;
+  right: -4px;
+  cursor: nesw-resize;
+}
+.resize-nw {
+  top: -4px;
+  left: -4px;
+  cursor: nwse-resize;
+}
+.resize-se {
+  bottom: -4px;
+  right: -4px;
+  cursor: nwse-resize;
+}
+.resize-sw {
+  bottom: -4px;
+  left: -4px;
+  cursor: nesw-resize;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .window {
+    animation: none;
+  }
+}
+
+/* On small screens a floating, resizable window doesn't work — every window
+   goes full-screen below the menu bar instead of being awkwardly squeezed. */
+@media (max-width: 700px) {
+  .window {
+    position: fixed !important;
+    top: 28px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 64px !important;
+    width: 100% !important;
+    height: auto !important;
+    transform: none !important;
+    border-radius: 0 !important;
+    border-width: 0 !important;
+  }
+
+  .window-resize-handles {
+    display: none;
+  }
+}

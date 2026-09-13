@@ -1,0 +1,90 @@
+.menubar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--menubar-bg);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
+  color: var(--menubar-text);
+  z-index: 20000;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--hairline);
+  user-select: none;
+}
+
+.menubar-left,
+.menubar-right,
+.menubar-secondary-menus {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.menubar-left {
+  min-width: 0;
+}
+.menubar-secondary-menus {
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.menubar-secondary-menus::-webkit-scrollbar {
+  display: none;
+}
+
+.menubar-icon-btn {
+  border: none;
+  background: none;
+  color: var(--menubar-text);
+  height: 28px;
+  padding: 0 7px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.menubar-icon-btn:hover,
+.menubar-icon-btn[aria-expanded="true"] {
+  background: rgba(127, 127, 127, 0.25);
+  border-radius: 5px;
+}
+.menubar-status {
+  cursor: default;
+}
+
+.menubar-clock {
+  border: none;
+  background: none;
+  color: var(--menubar-text);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  padding: 0 8px;
+  height: 28px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.menubar-clock:hover {
+  background: rgba(127, 127, 127, 0.25);
+  border-radius: 5px;
+}
+
+/* Small screens: keep the Apple menu, the current app's menu, and the
+   essential right-side controls; the File/Edit/View/Window/Help cluster and
+   purely decorative status glyphs would just overflow otherwise. Their
+   actions stay reachable via keyboard shortcuts. */
+@media (max-width: 700px) {
+  .menubar-secondary-menus {
+    display: none;
+  }
+  .menubar-status-optional {
+    display: none;
+  }
+  .menubar-clock {
+    font-size: 12px;
+    padding: 0 4px;
+  }
+}

@@ -1,0 +1,100 @@
+.spotlight-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 25000;
+  display: flex;
+  justify-content: center;
+  padding-top: 14vh;
+  background: rgba(0, 0, 0, 0.15);
+  animation: spotlight-backdrop-in var(--motion-fast) var(--ease-standard);
+}
+
+@keyframes spotlight-backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.spotlight-panel {
+  width: 100%;
+  max-width: 560px;
+  height: fit-content;
+  background: var(--surface-elevated);
+  backdrop-filter: blur(36px) saturate(1.7);
+  -webkit-backdrop-filter: blur(36px) saturate(1.7);
+  border-radius: 14px;
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow-window);
+  overflow: hidden;
+  animation: spotlight-in var(--motion-base) var(--ease-standard);
+}
+
+@keyframes spotlight-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.97);
+  }
+}
+
+.spotlight-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  color: var(--text-tertiary);
+}
+.spotlight-input-row input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 20px;
+  color: var(--text-primary);
+}
+
+.spotlight-results {
+  max-height: 360px;
+  overflow-y: auto;
+  border-top: 1px solid var(--hairline);
+  padding: 6px;
+}
+
+.spotlight-group-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-tertiary);
+  padding: 6px 10px 2px;
+}
+
+.spotlight-result {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  background: none;
+  padding: 7px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  color: var(--text-primary);
+  font-size: 13.5px;
+  text-align: left;
+}
+.spotlight-result.active {
+  background: var(--accent);
+  color: white;
+}
+
+.spotlight-empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-tertiary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spotlight-backdrop,
+  .spotlight-panel {
+    animation: none;
+  }
+}
