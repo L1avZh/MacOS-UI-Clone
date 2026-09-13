@@ -1,0 +1,80 @@
+.launchpad-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 24000;
+  background: rgba(20, 20, 24, 0.55);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: launchpad-in var(--motion-base) var(--ease-standard);
+}
+
+@keyframes launchpad-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.launchpad {
+  width: min(900px, 90vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  max-height: 80vh;
+}
+
+.launchpad-search {
+  width: 240px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  padding: 6px 12px;
+  color: white;
+  text-align: center;
+  outline: none;
+}
+.launchpad-search::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.launchpad-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 24px;
+  width: 100%;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.launchpad-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: white;
+  font-size: 12.5px;
+  padding: 10px;
+  border-radius: 12px;
+  transition: transform var(--motion-fast) ease;
+}
+.launchpad-item:hover {
+  transform: scale(1.06);
+}
+.launchpad-item:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .launchpad-backdrop {
+    animation: none;
+  }
+  .launchpad-item {
+    transition: none;
+  }
+}

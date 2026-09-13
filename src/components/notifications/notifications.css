@@ -1,0 +1,176 @@
+.notification-center {
+  position: fixed;
+  top: 34px;
+  right: 10px;
+  width: 320px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-elevated);
+  backdrop-filter: blur(30px) saturate(1.6);
+  -webkit-backdrop-filter: blur(30px) saturate(1.6);
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  box-shadow: var(--shadow-float);
+  z-index: 20001;
+  overflow: hidden;
+  animation: cc-in var(--motion-fast) var(--ease-standard);
+}
+[dir="rtl"] .notification-center {
+  right: auto;
+  left: 10px;
+}
+
+.nc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.nc-header button {
+  border: none;
+  background: none;
+  color: var(--accent);
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 400;
+}
+
+.nc-list {
+  overflow-y: auto;
+  padding: 0 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nc-empty {
+  text-align: center;
+  color: var(--text-tertiary);
+  padding: 40px 0;
+  font-size: 13px;
+}
+
+.nc-item {
+  background: var(--surface-inset);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.nc-item-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+.nc-app-name {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-tertiary);
+  flex: 1;
+}
+.nc-time {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+.nc-dismiss {
+  border: none;
+  background: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+.nc-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.nc-message {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.toast-stack {
+  position: fixed;
+  top: 36px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 26000;
+  width: 300px;
+}
+[dir="rtl"] .toast-stack {
+  right: auto;
+  left: 12px;
+}
+
+.toast {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--surface-elevated);
+  backdrop-filter: blur(24px) saturate(1.6);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  box-shadow: var(--shadow-float);
+  padding: 10px 14px;
+  cursor: pointer;
+  animation: toast-in var(--motion-base) var(--ease-standard);
+}
+[dir="rtl"] .toast {
+  text-align: right;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+[dir="rtl"] .toast {
+  animation-name: toast-in-rtl;
+}
+@keyframes toast-in-rtl {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}
+
+.toast-header {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+.toast-app-name {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  flex: 1;
+}
+.toast-time {
+  font-size: 10.5px;
+  color: var(--text-tertiary);
+}
+.toast-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.toast-message {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notification-center,
+  .toast {
+    animation: none;
+  }
+}
