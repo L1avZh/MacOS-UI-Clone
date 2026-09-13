@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useWindowStore } from "@/state/windowStore";
 import { useUiStore } from "@/state/uiStore";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 function isTypingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
@@ -13,6 +14,8 @@ function isTypingTarget(target: EventTarget | null): boolean {
  * regardless of the host OS the browser runs on.
  */
 export function useGlobalShortcuts() {
+  const reduceMotion = usePrefersReducedMotion();
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const mod = e.metaKey || e.ctrlKey;
@@ -41,7 +44,7 @@ export function useGlobalShortcuts() {
 
       if (mod && e.key.toLowerCase() === "w" && focusedId) {
         e.preventDefault();
-        windows.close(focusedId);
+        windows.requestClose(focusedId, reduceMotion);
         return;
       }
 
@@ -67,5 +70,5 @@ export function useGlobalShortcuts() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [reduceMotion]);
 }

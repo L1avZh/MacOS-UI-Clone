@@ -17,4 +17,6 @@ export interface WindowInstance {
   minimized: boolean;
   maximized: boolean;
   focused: boolean;
+  /** True while the close animation plays; the window is removed from the store when it finishes. */
+  closing: boolean;
 }

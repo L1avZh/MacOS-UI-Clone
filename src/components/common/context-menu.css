@@ -9,7 +9,7 @@
   box-shadow: var(--shadow-float);
   padding: 5px;
   z-index: 30000;
-  animation: menu-pop var(--motion-fast) var(--ease-standard);
+  animation: menu-pop var(--motion-popover) var(--ease-standard);
 }
 
 @keyframes menu-pop {

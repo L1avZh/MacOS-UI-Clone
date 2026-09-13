@@ -35,7 +35,7 @@
   box-shadow: var(--shadow-float);
   padding: 5px;
   z-index: 10000;
-  animation: menu-in var(--motion-fast) var(--ease-standard);
+  animation: menu-in var(--motion-popover) var(--ease-standard);
 }
 
 [dir="rtl"] .menubar-dropdown {

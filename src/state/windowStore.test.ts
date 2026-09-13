@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useWindowStore } from "./windowStore";
 
 const initialState = useWindowStore.getState();
@@ -103,5 +103,85 @@ describe("windowStore", () => {
     useWindowStore.getState().open("terminal");
     useWindowStore.getState().focus(a);
     expect(useWindowStore.getState().focusedWindowId()).toBe(a);
+  });
+
+  describe("requestClose (animated close)", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("marks the window closing immediately but keeps it until the animation finishes", () => {
+      const id = useWindowStore.getState().open("finder");
+      useWindowStore.getState().requestClose(id);
+      expect(useWindowStore.getState().windows[id]?.closing).toBe(true);
+      expect(useWindowStore.getState().windows[id]?.focused).toBe(false);
+
+      vi.advanceTimersByTime(200);
+      expect(useWindowStore.getState().windows[id]).toBeUndefined();
+    });
+
+    it("removes immediately when reduced motion asks for no animation", () => {
+      const id = useWindowStore.getState().open("finder");
+      useWindowStore.getState().requestClose(id, true);
+      expect(useWindowStore.getState().windows[id]).toBeUndefined();
+    });
+
+    it("ignores focus/minimize/maximize on a window that is already closing", () => {
+      const id = useWindowStore.getState().open("finder");
+      useWindowStore.getState().requestClose(id);
+
+      useWindowStore.getState().focus(id);
+      useWindowStore.getState().minimize(id);
+      useWindowStore.getState().toggleMaximize(id);
+
+      const w = useWindowStore.getState().windows[id]!;
+      expect(w.focused).toBe(false);
+      expect(w.minimized).toBe(false);
+      expect(w.maximized).toBe(false);
+      expect(w.closing).toBe(true);
+    });
+
+    it("Dock-style reopen of a closing singleton app creates a fresh window instead of resurrecting the dying one", () => {
+      const first = useWindowStore.getState().open("calculator");
+      useWindowStore.getState().requestClose(first);
+
+      const second = useWindowStore.getState().open("calculator");
+      expect(second).not.toBe(first);
+      expect(useWindowStore.getState().windows[second]?.closing).toBe(false);
+
+      vi.advanceTimersByTime(200);
+      // The old instance is gone; the fresh one survives untouched.
+      expect(useWindowStore.getState().windows[first]).toBeUndefined();
+      expect(useWindowStore.getState().windows[second]).toBeDefined();
+    });
+
+    it("windowsForApp excludes windows that are closing", () => {
+      const id = useWindowStore.getState().open("finder");
+      useWindowStore.getState().requestClose(id);
+      expect(useWindowStore.getState().windowsForApp("finder")).toHaveLength(0);
+    });
+
+    it("closeApp cancels a pending close timer instead of leaving a stray one", () => {
+      const id = useWindowStore.getState().open("finder");
+      useWindowStore.getState().requestClose(id);
+      useWindowStore.getState().closeApp("finder");
+      expect(useWindowStore.getState().windows[id]).toBeUndefined();
+
+      // The pending timer, if it fired, would call close() on an id that's
+      // already gone — harmless, but let's prove it doesn't throw or resurrect anything.
+      expect(() => vi.advanceTimersByTime(500)).not.toThrow();
+      expect(useWindowStore.getState().windows[id]).toBeUndefined();
+    });
+
+    it("calling requestClose twice on the same window does not double-schedule removal", () => {
+      const id = useWindowStore.getState().open("finder");
+      useWindowStore.getState().requestClose(id);
+      useWindowStore.getState().requestClose(id);
+      vi.advanceTimersByTime(200);
+      expect(useWindowStore.getState().windows[id]).toBeUndefined();
+    });
   });
 });

@@ -4,6 +4,7 @@ import { useWindowStore } from "@/state/windowStore";
 import { useUiStore } from "@/state/uiStore";
 import { useSettingsStore } from "@/state/settingsStore";
 import { useClock } from "@/hooks/useClock";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { getAppDefinition } from "@/apps/registry";
 import { AppleGlyph, WifiGlyph, BatteryGlyph, SearchGlyph, ControlCenterGlyph } from "@/icons/Glyphs";
 import "./menubar.css";
@@ -13,16 +14,19 @@ export default function MenuBar() {
   const focusedId = useWindowStore((s) => s.focusedWindowId());
   const focus = useWindowStore((s) => s.focus);
   const minimize = useWindowStore((s) => s.minimize);
-  const close = useWindowStore((s) => s.close);
+  const requestClose = useWindowStore((s) => s.requestClose);
   const closeApp = useWindowStore((s) => s.closeApp);
   const open = useWindowStore((s) => s.open);
   const toggleMaximize = useWindowStore((s) => s.toggleMaximize);
+  const reduceMotion = usePrefersReducedMotion();
 
   const activeMenu = useUiStore((s) => s.activeMenuBarMenu);
   const setActiveMenu = useUiStore((s) => s.setActiveMenuBarMenu);
   const toggleSpotlight = useUiStore((s) => s.toggleSpotlight);
   const controlCenterOpen = useUiStore((s) => s.controlCenterOpen);
   const setControlCenterOpen = useUiStore((s) => s.setControlCenterOpen);
+  const notificationCenterOpen = useUiStore((s) => s.notificationCenterOpen);
+  const setNotificationCenterOpen = useUiStore((s) => s.setNotificationCenterOpen);
   const lock = useUiStore((s) => s.lock);
 
   const clock24Hour = useSettingsStore((s) => s.clock24Hour);
@@ -86,7 +90,7 @@ export default function MenuBar() {
       label: "Close Window",
       shortcut: "⌘W",
       disabled: !focusedId,
-      onSelect: () => focusedId && close(focusedId),
+      onSelect: () => focusedId && requestClose(focusedId, reduceMotion),
     },
   ];
 
@@ -153,7 +157,13 @@ export default function MenuBar() {
         >
           <ControlCenterGlyph size={14} />
         </button>
-        <button type="button" className="menubar-clock" onClick={() => setControlCenterOpen(!controlCenterOpen)}>
+        <button
+          type="button"
+          className="menubar-clock"
+          onClick={() => setNotificationCenterOpen(!notificationCenterOpen)}
+          aria-label="Notification Center"
+          aria-expanded={notificationCenterOpen}
+        >
           {dateString} {timeString}
         </button>
       </div>

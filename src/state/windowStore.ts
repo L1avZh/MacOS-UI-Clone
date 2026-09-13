@@ -8,6 +8,21 @@ const MENU_BAR_HEIGHT = 28;
 const DOCK_RESERVED_HEIGHT = 96;
 /** Minimum strip of a window that must stay reachable on screen. */
 const MIN_VISIBLE_MARGIN = 80;
+/** Must match --motion-fast in tokens.css — the close animation's duration. */
+const CLOSE_ANIMATION_MS = 120;
+
+/** Pending "finish closing" timers, keyed by window id, so a window removed
+ * some other way (Quit, closeApp) never leaves a stray timer trying to close
+ * an id that's already gone. */
+const pendingCloseTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+function clearPendingClose(id: string): void {
+  const timer = pendingCloseTimers.get(id);
+  if (timer !== undefined) {
+    clearTimeout(timer);
+    pendingCloseTimers.delete(id);
+  }
+}
 
 interface OpenOptions {
   title?: string;
@@ -21,6 +36,8 @@ interface WindowState {
   viewport: { width: number; height: number };
   setViewport: (width: number, height: number) => void;
   open: (appId: AppId, options?: OpenOptions) => string;
+  /** Starts the close animation (or removes immediately if `immediate`); the store removes the window when it finishes. */
+  requestClose: (id: string, immediate?: boolean) => void;
   close: (id: string) => void;
   closeApp: (appId: AppId) => void;
   focus: (id: string) => void;
@@ -72,7 +89,7 @@ export const useWindowStore = create<WindowState>((set, get) => ({
     const state = get();
 
     if (def.singleton) {
-      const existing = Object.values(state.windows).find((w) => w.appId === appId);
+      const existing = Object.values(state.windows).find((w) => w.appId === appId && !w.closing);
       if (existing) {
         get().restore(existing.id);
         return existing.id;
@@ -105,6 +122,7 @@ export const useWindowStore = create<WindowState>((set, get) => ({
       minimized: false,
       maximized: false,
       focused: true,
+      closing: false,
     };
 
     set((s) => ({
@@ -119,7 +137,25 @@ export const useWindowStore = create<WindowState>((set, get) => ({
     return id;
   },
 
+  requestClose: (id, immediate) => {
+    const w = get().windows[id];
+    if (!w || w.closing) return;
+
+    if (immediate) {
+      get().close(id);
+      return;
+    }
+
+    set((state) => ({ windows: { ...state.windows, [id]: { ...w, closing: true, focused: false } } }));
+    const timer = setTimeout(() => {
+      pendingCloseTimers.delete(id);
+      get().close(id);
+    }, CLOSE_ANIMATION_MS);
+    pendingCloseTimers.set(id, timer);
+  },
+
   close: (id) => {
+    clearPendingClose(id);
     set((state) => {
       const windows = { ...state.windows };
       delete windows[id];
@@ -133,6 +169,7 @@ export const useWindowStore = create<WindowState>((set, get) => ({
       const removed = new Set<string>();
       for (const [id, w] of Object.entries(windows)) {
         if (w.appId === appId) {
+          clearPendingClose(id);
           delete windows[id];
           removed.add(id);
         }
@@ -143,7 +180,8 @@ export const useWindowStore = create<WindowState>((set, get) => ({
 
   focus: (id) => {
     set((state) => {
-      if (!state.windows[id]) return state;
+      const target = state.windows[id];
+      if (!target || target.closing) return state;
       const topZ = state.topZ + 1;
       const windows = Object.fromEntries(
         Object.entries(state.windows).map(([wid, w]) => [
@@ -158,7 +196,7 @@ export const useWindowStore = create<WindowState>((set, get) => ({
   minimize: (id) => {
     set((state) => {
       const w = state.windows[id];
-      if (!w) return state;
+      if (!w || w.closing) return state;
       return { windows: { ...state.windows, [id]: { ...w, minimized: true, focused: false } } };
     });
   },
@@ -170,7 +208,7 @@ export const useWindowStore = create<WindowState>((set, get) => ({
   toggleMaximize: (id) => {
     set((state) => {
       const w = state.windows[id];
-      if (!w) return state;
+      if (!w || w.closing) return state;
       if (w.maximized) {
         const rect = w.restoreRect ?? w.rect;
         return { windows: { ...state.windows, [id]: { ...w, maximized: false, rect, restoreRect: null } } };
@@ -189,7 +227,8 @@ export const useWindowStore = create<WindowState>((set, get) => ({
     set((state) => {
       const w = state.windows[id];
       if (!w || w.maximized) return state;
-      return { windows: { ...state.windows, [id]: { ...w, rect: { ...w.rect, x, y } } } };
+      const rect = clampToViewport({ ...w.rect, x, y }, state.viewport);
+      return { windows: { ...state.windows, [id]: { ...w, rect } } };
     });
   },
 
@@ -197,7 +236,7 @@ export const useWindowStore = create<WindowState>((set, get) => ({
     set((state) => {
       const w = state.windows[id];
       if (!w || w.maximized) return state;
-      return { windows: { ...state.windows, [id]: { ...w, rect } } };
+      return { windows: { ...state.windows, [id]: { ...w, rect: clampToViewport(rect, state.viewport) } } };
     });
   },
 
@@ -215,6 +254,6 @@ export const useWindowStore = create<WindowState>((set, get) => ({
   },
 
   windowsForApp: (appId) => {
-    return Object.values(get().windows).filter((w) => w.appId === appId);
+    return Object.values(get().windows).filter((w) => w.appId === appId && !w.closing);
   },
 }));

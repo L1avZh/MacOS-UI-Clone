@@ -14,7 +14,7 @@
   box-shadow: var(--shadow-float);
   z-index: 20001;
   overflow: hidden;
-  animation: cc-in var(--motion-fast) var(--ease-standard);
+  animation: panel-drop-in var(--motion-popover) var(--ease-standard);
 }
 [dir="rtl"] .notification-center {
   right: auto;
