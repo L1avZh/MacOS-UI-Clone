@@ -34,9 +34,20 @@
 
   --focus-ring: 0 0 0 3px rgba(10, 132, 255, 0.5);
 
-  --motion-fast: 120ms;
-  --motion-base: 220ms;
-  --motion-slow: 360ms;
+  /* A small, deliberately coarse set of timing tiers — reuse one of these
+     rather than inventing a new duration per component.
+       micro     (buttons, toggles, tooltips): ~80-140ms
+       popover   (menus, context menus, Control Center/Notification Center): ~120-180ms
+       window    (window open/close, Spotlight, Launchpad, dialogs): ~160-240ms
+       ambient   (lock screen fade, large backdrop transitions): ~300-400ms */
+  --motion-micro: 120ms;
+  --motion-popover: 150ms;
+  --motion-window: 220ms;
+  --motion-ambient: 360ms;
+  /* Back-compat aliases — existing rules keep working under the new names. */
+  --motion-fast: var(--motion-micro);
+  --motion-base: var(--motion-window);
+  --motion-slow: var(--motion-ambient);
   --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -107,14 +118,16 @@
 
 @media (prefers-reduced-motion: reduce) {
   :root {
-    --motion-fast: 0ms;
-    --motion-base: 0ms;
-    --motion-slow: 0ms;
+    --motion-micro: 0ms;
+    --motion-popover: 0ms;
+    --motion-window: 0ms;
+    --motion-ambient: 0ms;
   }
 }
 
 :root[data-reduce-motion="true"] {
-  --motion-fast: 0ms;
-  --motion-base: 0ms;
-  --motion-slow: 0ms;
+  --motion-micro: 0ms;
+  --motion-popover: 0ms;
+  --motion-window: 0ms;
+  --motion-ambient: 0ms;
 }

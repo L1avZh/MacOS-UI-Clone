@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { listDockApps } from "@/apps/registry";
 import { useWindowStore } from "@/state/windowStore";
 import { useSettingsStore } from "@/state/settingsStore";
@@ -33,12 +33,26 @@ export default function Dock() {
   const [bouncing, setBouncing] = useState<Record<string, boolean>>({});
   const [revealed, setRevealed] = useState(false);
   const dockRef = useRef<HTMLDivElement>(null);
+  const mouseMoveFrame = useRef<number | null>(null);
 
   const magnify = dockMagnification && !reduceMotion;
   const vertical = dockPosition === "left" || dockPosition === "right";
 
+  // A high-poll-rate mouse can fire mousemove far more often than the screen
+  // repaints; coalesce to one state update per animation frame so hovering
+  // across the dock doesn't ask React to re-render faster than 60fps can show.
+  useEffect(() => {
+    return () => {
+      if (mouseMoveFrame.current !== null) cancelAnimationFrame(mouseMoveFrame.current);
+    };
+  }, []);
+
   function windowsFor(appId: AppId) {
-    return Object.values(windows).filter((w) => w.appId === appId);
+    // Exclude windows mid-close-animation: the store still holds them briefly
+    // so the CSS transition can finish, but the Dock should treat that as
+    // "not open" — otherwise clicking the icon mid-animation resurrects a
+    // window that's about to disappear anyway.
+    return Object.values(windows).filter((w) => w.appId === appId && !w.closing);
   }
 
   function launch(appId: AppId) {
@@ -59,11 +73,20 @@ export default function Dock() {
     }
   }
 
-  function handleMouseMove(e: React.MouseEvent) {
-    if (!magnify || !dockRef.current) return;
-    const rect = dockRef.current.getBoundingClientRect();
-    setHoverPos(vertical ? e.clientY - rect.top : e.clientX - rect.left);
-  }
+  const latestHoverPos = useRef<number | null>(null);
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (!magnify || !dockRef.current) return;
+      const rect = dockRef.current.getBoundingClientRect();
+      latestHoverPos.current = vertical ? e.clientY - rect.top : e.clientX - rect.left;
+      if (mouseMoveFrame.current !== null) return;
+      mouseMoveFrame.current = requestAnimationFrame(() => {
+        mouseMoveFrame.current = null;
+        setHoverPos(latestHoverPos.current);
+      });
+    },
+    [magnify, vertical]
+  );
 
   function scaleFor(index: number, count: number) {
     if (!magnify || hoverPos === null) return 1;

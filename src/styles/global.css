@@ -72,3 +72,21 @@ button {
 [dir="rtl"] .flip-rtl {
   transform: scaleX(-1);
 }
+
+/* Shared entrance for small floating panels anchored near the top of the
+ * screen (Control Center, Notification Center, and similar). One definition
+ * instead of each panel's stylesheet quietly depending on another's. */
+@keyframes panel-drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes panel-drop-in {
+    from {
+      opacity: 0;
+    }
+  }
+}
