@@ -1,6 +1,10 @@
 # macOS UI Clone
 
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://l1avzh.github.io/MacOS-UI-Clone/)
+
 A macOS-inspired desktop experience for the web — draggable windows, a magnifying dock, a real menu bar, Spotlight search, Notification Center, and a handful of genuinely interactive simulated apps, all running client-side in your browser.
+
+**[Try the live demo →](https://l1avzh.github.io/MacOS-UI-Clone/)** — nothing to install, no account, any password unlocks it.
 
 This is an independent, open-source project inspired by Apple's macOS interface design. It is **not** affiliated with, endorsed by, or sponsored by Apple Inc. "macOS" is a trademark of Apple Inc. Every icon and asset here is original artwork, not a reproduction of Apple's.
 
