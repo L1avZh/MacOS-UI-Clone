@@ -65,6 +65,12 @@ export function useWindowDrag({ elementRef, rect, minWidth, minHeight, disabled,
         document.removeEventListener("pointermove", handleMove);
         document.removeEventListener("pointerup", handleUp);
         if (frame !== null) cancelAnimationFrame(frame);
+        // Apply the last frame synchronously: if the whole gesture happened
+        // within a single animation frame (a very fast flick, or a
+        // programmatic drag in a test), the scheduled rAF above may never
+        // have gotten a chance to run, leaving the DOM showing the pre-drag
+        // position until React's own re-render catches up.
+        applyFrame();
         el.style.willChange = "auto";
         onMoveCommit(x, y);
       };
@@ -121,6 +127,7 @@ export function useWindowDrag({ elementRef, rect, minWidth, minHeight, disabled,
         document.removeEventListener("pointermove", handleMove);
         document.removeEventListener("pointerup", handleUp);
         if (frame !== null) cancelAnimationFrame(frame);
+        applyFrame();
         el.style.willChange = "auto";
         onResizeCommit(next);
       };
